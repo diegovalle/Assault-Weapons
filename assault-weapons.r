@@ -35,6 +35,7 @@ savePlotAA <- function(p, filename, width = 960, height = 600){
     Cairo(file = filename, width=width, height=height)
     print(p)
     dev.off()
+    #dev.print(png, file = filename, width=width, height=height)
 }
 
 findBreakAW <- function(df){
@@ -71,8 +72,9 @@ plotAsWeBreaks <- function(df, breaks.df, ban, sub = NULL,
                linetype = 2) +
     opts(title = plottitle) +
     xlab("date") + ylab("proportion") +
-    scale_y_continuous(formatter = "percent") +
-    facet_wrap(~ State, scale = "free_y")
+    scale_y_continuous(formatter = "percent",
+                       breaks = c(.25, .5, .75)) +
+    facet_wrap(~ State)#, scale = "free_y")
   if (!se) {
       p
   } else {
@@ -84,16 +86,18 @@ plotAsWeBreaks <- function(df, breaks.df, ban, sub = NULL,
 }
 
 #Constants
-plottitle <- "Structural Change in Firearm Homicides as a Proportion of all Homicides (the Gray Line is the Assault Weapon Ban Expiration Date)"
+plottitle <- "Firearm Homicides as a Proportion of all Homicides (the Gray Line is the Assault Weapon Ban Expiration Date)"
+bothtitle <-  "Monthly Homicide and Homicide with Firearm Rates with Trends (the Gray Line is the Assault Weapon Ban Expiration Date)"
 kstart.year <- 2000
-kend.year <- 2008
+kend.year <- 2006
 knum.years <- kend.year - kstart.year + 1
+ban <- as.Date("2004/09/13", "%Y/%m/%d")
 
 ########################################################
 #Read the data
 ########################################################
-hom <- read.csv(file("http://spreadsheets.google.com/pub?key=0AjjLwVYbDGx7dHdaMHhCQ21OZ1VzQk42WnltUXFkUWc&single=true&gid=0&output=csv",encoding = "UTF8"))
-#hom <- read.csv(bzfile("guns-month.csv.bz2"))
+#hom <- read.csv(file("http://spreadsheets.google.com/pub?key=0AjjLwVYbDGx7dHdaMHhCQ21OZ1VzQk42WnltUXFkUWc&single=true&gid=0&output=csv",encoding = "UTF8"))
+hom <- read.csv(bzfile("guns-month.csv.bz2"))
 hom <- subset(hom, Month != "No Especificado")
 hom <- hom[-grep("Total", hom$State),]
 hom$Year <- rep(1998:2008, each = 12)
@@ -105,9 +109,14 @@ hom$m <- rep(1:12)
 hom$date <- as.Date(paste(hom$Year,hom$m,"15", sep = "/"), "%Y/%m/%d")
 hom$State <- cleanNames(hom, "State")
 hom <- subset(hom, m != 12 | Year != 2008)
-hom <- subset(hom, Year >= kstart.year & Year <= kend.year)
 
-ban <- as.Date("2004/09/13", "%Y/%m/%d")
+#Monthly Population Interpolation
+pop <- read.csv("conapo-pop.csv")
+pop2 <- data.frame(year = rep(1998:2008, each = 12),
+                   month = rep(1:12))
+pop2$Monthly.Pop[pop2$month == 6] <- unlist(pop[1,1:ncol(pop)])
+pop2$Monthly <- na.spline(pop2$Monthly.Pop, na.rm=FALSE)
+
 
 #Test for cointegration
 unitRoot <- function(df){
@@ -118,6 +127,45 @@ unitRoot <- function(df){
 #Looks ok
 dlply(hom, .(State), unitRoot)
 
+########################################################
+#Homicide and Firearm Homicide rates
+########################################################
+hom.both <- ddply(hom, .(Year, m), function(df)
+                  c(firearm = sum(df$Murders.with.Firearm),
+                    homicides = sum(df$Murders)))
+hom.both[3:4] <- data.frame(sapply(hom.both[3:4],
+                function(x) x / pop2$Monthly[1:nrow(hom.both)] *
+                                100000 * 12))
+#STL Decomposition
+stl <- apply(hom.both[3:4], 2,
+      function(x) {
+        stl(ts(x, start = 1998, freq = 12), "per")
+      })
+
+stl <- lapply(stl, function(x)
+                      cbind(hom.both, data.frame(x$time.series)))
+
+
+hom.both <- melt(hom.both, id = c("Year", "m"))
+hom.both$date <- as.Date(paste(hom.both$Year,
+                             hom.both$m,"15", sep = "/"), "%Y/%m/%d")
+
+#Necessary for ggplot
+stl$firearm$date <- hom.both$date[1:131]
+stl$homicide$date <- hom.both$date[1:131]
+stl$homicide$variable <- "foo"
+stl$firearm$variable <- "foo"
+
+p <- ggplot(hom.both, aes(date, value, group = variable)) +
+    geom_line(size = .2) +
+    geom_line(data = stl$firearm, aes(date, trend), color = "blue") +
+    geom_line(data = stl$homicide, aes(date, trend), color = "blue") +
+    scale_x_date() +
+    geom_vline(aes(xintercept = as.Date(ban)), color = "gray70",
+               linetype = 2) +
+    opts(title = bothtitle) +
+    xlab("date") + ylab("annualized monthly homicide rate")
+savePlotAA(p, "output/mexico-hom-firearm.png")
 
 ########################################################
 #For all of Mexico
@@ -128,22 +176,19 @@ hom.mx$date <- as.Date(paste(hom.mx$Year,
                              hom.mx$m,"15", sep = "/"), "%Y/%m/%d")
 
 
+hom.mx$trend <- data.frame(stl(ts(hom.mx$V1, start = 1998, freq = 12), "per")$time.series)$trend
+
+
 rate <- ts(hom.mx$V1, start = kstart.year, freq = 12)
 breakmx <- breakpoints(rate ~ 1, h = 12, breaks = 1)
 breakconf <- confint(breakmx, breaks = 1)$confint
 aw.break <- sapply(breakconf, convertToDate)
 
 p <- ggplot(hom.mx, aes(date, V1)) +
-    geom_line() +
-    geom_vline(aes(xintercept = as.Date(ban)), color = "gray",
+    geom_line(size = .2) +
+    geom_line(aes(date, trend), color = "blue") +
+    geom_vline(aes(xintercept = as.Date(ban)), color = "gray70",
                linetype = 2) +
-    geom_vline(aes(xintercept = as.Date(aw.break[2])), color = "red",
-               alpha = .7) +
-    geom_smooth() +
-    geom_rect(aes(xmin = as.Date(aw.break[1]),
-              xmax = as.Date(aw.break[3]),
-              ymin=-Inf, ymax=Inf), alpha = .01,
-              fill = "#FFC8CB") +
     opts(title = plottitle) +
     xlab("date") + ylab("proportion") +
     scale_y_continuous(formatter = "percent")
@@ -153,6 +198,7 @@ savePlotAA(p, "output/mexico.png")
 ########################################################
 #Small Multiples of all the states with breakpoints
 ########################################################
+hom <- subset(hom, Year >= kstart.year & Year <= kend.year)
 breaks.df <- ddply(hom, .(State), findBreakAW)
 names(breaks.df) <- c("State", "low", "breakpoints", "up")
 breaks.df$low[breaks.df$low < 0] <- 0
@@ -174,8 +220,9 @@ filenames <- sapply(filenames,
                                       ".png", sep = ""))
 
 
-mapply(function(x, y)
-       savePlotAA(plotAsWeBreaks(hom, breaks.df, ban, x), y),
-       list(NULL, "Sonora", dts, st), filenames
+mapply(function(x, y, z)
+            savePlotAA(plotAsWeBreaks(hom, breaks.df, ban, x, z), y),
+       list(NULL, "Sonora", dts, st), filenames,
+       list(TRUE, FALSE, FALSE, FALSE)
       )
 
