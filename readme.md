@@ -1,6 +1,7 @@
-The effect of the expiration of the assault weapon ban on Mexico
+ÔªøThe effect of the expiration of the assault weapon ban on Mexico
 -----------------------------------------------------------------
 
+![Homicides and Homicides with Firearm](http://imgur.com/8oH2Q.png)
 
 Sources
 =======
@@ -10,14 +11,14 @@ __La Barbie__
 [The Dallas Morning News](http://www.dallasnews.com/sharedcontent/dws/news/dmn/stories/032106dnintlabarbie.2c3e434.html)
 
 __
->En Èl iban Rodolfo Carrillo Fuentes y su esposa; habÌan sido ejecutados por un comando en el estacionamiento del centro comercial CinÈpolis en Culiac·n, el 11 de septiembre de 2004.
+>En √©l iban Rodolfo Carrillo Fuentes y su esposa; hab√≠an sido ejecutados por un comando en el estacionamiento del centro comercial Cin√©polis en Culiac√°n, el 11 de septiembre de 2004.
 
->El encargado de la operaciÛn que acabÛ con la vida del NiÒo de Oro óhermano del fallecido SeÒor de los Cielos, Amado Carrilloó, su mujer y seis personas m·s óentre ellas un lavacochesó era un oficial de infanterÌa desertor del EjÈrcito, quien a partir de esa fecha se volviÛ cÈlebre en el mundo de los sicarios por discreto y eficaz y por haber realizado el ataque con el que su jefe, JoaquÌn El Chapo Guzm·n, reventÛ su relaciÛn con los Carrillo.
-[La infanterÌa ligera del ëChapoí](http://www.eluniversal.com.mx/nacion/159407.html)
+>El encargado de la operaci√≥n que acab√≥ con la vida del Ni√±o de Oro ‚Äîhermano del fallecido Se√±or de los Cielos, Amado Carrillo‚Äî, su mujer y seis personas m√°s ‚Äîentre ellas un lavacoches‚Äî era un oficial de infanter√≠a desertor del Ej√©rcito, quien a partir de esa fecha se volvi√≥ c√©lebre en el mundo de los sicarios por discreto y eficaz y por haber realizado el ataque con el que su jefe, Joaqu√≠n El Chapo Guzm√°n, revent√≥ su relaci√≥n con los Carrillo.
+[La infanter√≠a ligera del ‚ÄòChapo‚Äô](http://www.eluniversal.com.mx/nacion/159407.html)
 
 __Homicides with Firearm__
 
-DirecciÛn General de InformaciÛn en Salud (DGIS). Base de datos de defunciones 1979-2007. [en lÌnea]: Sistema Nacional de InformaciÛn en Salud (SINAIS). [MÈxico]: SecretarÌa de Salud. <http://www.sinais.salud.gob.mx> [Consulta: 01 abril 2009].
+Direcci√≥n General de Informaci√≥n en Salud (DGIS). Base de datos de defunciones 1979-2007. [en l√≠nea]: Sistema Nacional de Informaci√≥n en Salud (SINAIS). [M√©xico]: Secretar√≠a de Salud. <http://www.sinais.salud.gob.mx> [Consulta: 01 abril 2009].
 
 Firearms-related homicides: 
 
@@ -27,7 +28,7 @@ Firearms-related homicides:
 
 __Suicides with Firearm__
 
-DirecciÛn General de InformaciÛn en Salud (DGIS). Base de datos de defunciones 1979-2007. [en lÌnea]: Sistema Nacional de InformaciÛn en Salud (SINAIS). [MÈxico]: SecretarÌa de Salud. <http://www.sinais.salud.gob.mx> [Consulta: 01 abril 2009].
+Direcci√≥n General de Informaci√≥n en Salud (DGIS). Base de datos de defunciones 1979-2007. [en l√≠nea]: Sistema Nacional de Informaci√≥n en Salud (SINAIS). [M√©xico]: Secretar√≠a de Salud. <http://www.sinais.salud.gob.mx> [Consulta: 01 abril 2009].
 
 Firearms-related suicides: 
 
@@ -37,5 +38,5 @@ Firearms-related suicides:
 
 __Population Data:__
 
-[Indicadores demogr·ficos b·sicos 1990-2030](http://www.conapo.gob.mx/index.php?option=com_content&view=article&id=125&Itemid=203)
+[Indicadores demogr√°ficos b√°sicos 1990-2030](http://www.conapo.gob.mx/index.php?option=com_content&view=article&id=125&Itemid=203)
 
