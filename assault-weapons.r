@@ -172,8 +172,8 @@ sui.both <- melt(sui.both, id = c("Year", "m"),
 sui.both$date <- as.Date(paste(sui.both$Year,
                              sui.both$m,"15", sep = "/"), "%Y/%m/%d")
 #Necessary for ggplot
-sstl$Firearm.Suicides$date <- hom.both$date[1:132]
-sstl$Suicides$date <- hom.both$date[1:132]
+sstl$Firearm.Suicides$date <- sui.both$date[1:132]
+sstl$Suicides$date <- sui.both$date[1:132]
 sstl$Firearm.Suicides$variable <- "foo"
 sstl$Suicides$variable <- "foo"
 
@@ -316,6 +316,56 @@ p <- ggplot(hom.border, aes(date, prop)) +
 savePlotAA(p, "output/us-border.png")
 
 ########################################################
+#For the big border cities
+########################################################
+hom.borderct <- read.csv("data/border-cities.csv")
+hom.borderct <- subset(hom.borderct, Month != "No Especificado")
+hom.borderct$Year <- rep(2001:2006, each = 12)
+muns <- unique(hom.borderct$Municipality)[unique(hom.borderct$Municipality) != ""]
+hom.borderct$Municipality2 <- rep(muns, each=12*6)
+hom.borderct$Municipality2 <- gsub("[0-9]+ ", "",
+                                   hom.borderct$Municipality2)
+hom.borderct$MonthN <- c(1:12)
+hom.borderct$date <- seq(as.Date("2001-01-15"), by='1 month',
+                       length=12*6)
+hom.borderct$prop <- with(hom.borderct,
+                            Firearm.Homicides / Homicides)
+#hom.borderct$prop[is.na(hom.borderct$prop)] <- 0
+hom.borderct[6:11][is.na(hom.borderct[6:11])] <- 0
+
+#hom.borderct <-
+ #   ddply(hom.borderct, .(Municipality2), function(df) data.frame(stl(ts(df$prop, start = 2001, freq = 12), "per")$time.series)$trend)
+
+p <- ggplot(hom.borderct, aes(date, prop)) +
+    geom_vline(aes(xintercept = as.Date(ban)), color = "gray70",
+               linetype = 2) +
+    geom_line() +
+#    geom_line(aes(date, trend), color = "blue") +
+    facet_wrap(~Municipality2)
+savePlotAA(p, "output/us-cities-prop.png")
+
+p <- ggplot(hom.borderct, aes(date, Homicides)) +
+    geom_vline(aes(xintercept = as.Date(ban)), color = "gray70",
+               linetype = 2) +
+    geom_line(color = "red") +
+    geom_line(aes(date, Firearm.Homicides), color = "darkgreen") +
+    facet_wrap(~Municipality2)
+savePlotAA(p, "output/us-cities-number.png")
+
+
+p <- ggplot(subset(hom.borderct, Municipality2 == "NUEVO LAREDO"),
+            aes(date, Homicides)) +
+    geom_vline(aes(xintercept = as.Date(ban)), color = "gray70",
+               linetype = 2) +
+    geom_vline(aes(xintercept = as.Date("2005-06-11")),
+               color = "gray70",
+               linetype = 2) +
+    geom_line(color = "red") +
+    geom_line(aes(date, Firearm.Homicides), color = "darkgreen")
+savePlotAA(p, "output/us-nuevo-laredo.png")
+
+
+########################################################
 #Small Multiples of all the states with breakpoints
 ########################################################
 hom <- subset(hom, Year >= kstart.year & Year <= kend.year)
@@ -348,3 +398,10 @@ mapply(function(x, y, z, height, width)
        list(TRUE, FALSE, FALSE, FALSE), widths, heights
       )
 
+p <- ggplot(subset(hom, hom$State == "Nuevo León"),
+       aes(date, Murders)) +
+    geom_line(color = "red") +
+    geom_line(aes(date, Murders.with.Firearm), color = "darkgreen") +
+    geom_vline(aes(xintercept = as.Date(ban)), color = "gray70",
+               linetype = 2)
+savePlotAA(p, "output/guns-num-nuevo-leon.png")
