@@ -5,7 +5,7 @@ There has been a lot of attention paid to the role of US guns exacerbating the v
 
 I used a zero-inflated Poisson regression model predicting the homicides by firearm count with and without a breakpoint. The model with a breakpoint occuring at the same time as the assault weapons ban proved superior.
 
-[!Weekly Homicides with Firearm](http://imgur.com/1THui.png)
+![Weekly Homicides with Firearm](http://imgur.com/1THui.png)
 
 Sources
 --------
