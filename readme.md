@@ -43,6 +43,14 @@ Firearms-related suicides:
 * X73 Intentional self-harm by rifle, shotgun and larger firearm discharge
 * X74 Intentional self-harm by other and unspecified firearm discharge
 
+Homicides in Nuevo Leon:
+
+[PGJ](http://www.nl.gob.mx/pics/pages/pgj_estmunicipaljua_base/Juah29.xls)
+
+Report on the Gun Battles of Nuevo Laredo:
+
+Texas Rangers, Border Security Operations Center, www.scribd.com/doc/35201752/NuevoLaredoCartelGunBattle7-16-2010 (The report is _extremely_ graphic)
+
 __Population Data:__
 
 [Indicadores demográficos básicos 1990-2030](http://www.conapo.gob.mx/index.php?option=com_content&view=article&id=125&Itemid=203)
