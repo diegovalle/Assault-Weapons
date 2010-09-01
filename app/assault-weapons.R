@@ -7,66 +7,12 @@
 #used to kill people
 #Structural Change models and Graphics
 
+source("app/functions.R")
 
-#Run this function if you're having trouble because of the
-#accents áé
-s <- function() source("assault-weapons.r")
-
-
-plotAsWe <- function(df){
-  ggplot(df, aes(as.Date(date), prop, group = State)) +
-    geom_line() +
-    scale_x_date() +
-    geom_smooth(method = "lm", formula = y ~ ns(x,3)) +
-    opts(axis.text.x=theme_text(angle=60, hjust=1.2 )) +
-    geom_vline(aes(xintercept = as.Date(ban)), color = "red") +
-    facet_wrap(~ State, scale = "free_y")
-}
-
-
-findBreakAW <- function(df){
-  rate <- ts(df$prop, start=kstart.year, freq=12)
-  print(df$State[1])
-  breakp <- breakpoints(rate ~ 1, h = 12, breaks = 1)
-  x <- confint(breakp, breaks = 1)
-  data.frame(x$confint)
-}
-
-
-
-plotAsWeBreaks <- function(df, breaks.df, ban, sub = NULL,
-                           se = FALSE) {
-  if(!is.null(sub)){
-      df <- subset(df, State %in% sub)
-      breaks.df <- subset(breaks.df, State %in% sub)
-  }
-  df <- merge(df, breaks.df, by = "State")
-  df$group <- df$date.x < df$date.y
-  df$State <- reorder(df$State, abs(df$date.y - ban))
-  p <- ggplot(df, aes(as.Date(date.x), prop.x, group = State)) +
-    geom_vline(aes(xintercept = as.Date(date.y)),
-               color = "red", alpha = .7) +
-    geom_vline(aes(xintercept = as.Date(ban)), color = "#333333",
-               linetype = 2) +
-    geom_smooth(se = FALSE, aes(group = group), method = lm,
-                alpha = .7, size = .5) +
-    geom_line(size = .2) +
-    scale_x_date(major="2 years") +
-    opts(axis.text.x=theme_text(angle=60, hjust=1.2 )) +
-    opts(title = plottitle.mult) +
-    xlab("date") + ylab("proportion of homicides by firearm") +
-    scale_y_continuous(formatter = "percent", limits = c(0, 1)) +
-    facet_wrap(~ State)# +
-    #geom_line(aes(date.x, trend), color = "blue")
-  if (!se) {
-      p
-  } else {
-      p + geom_rect(aes(xmin = as.Date(min),
-              xmax = as.Date(max),
-              ymin=-Inf, ymax=Inf),
-              alpha = .01, fill = "#FFC8CB")
-  }
-}
+#A macro to add a deseasonalized trend
+addTrend <- defmacro(df, col, start, expr={
+    df$trend <- data.frame(stl(ts(df[[col]], start = start, freq = 12), "per")$time.series)$trend
+})
 
 
 #Test for cointegration
@@ -82,11 +28,12 @@ dlply(hom, .(State), unitRoot)
 ########################################################
 #Suicides and Suicides with a Firearm
 ########################################################
-sui$trend2 <- data.frame(stl(ts(sui$prop, start = 1998, freq = 12), "per")$time.series)$trend
+addTrend(sui, "prop", 1998)
+#sui$trend2 <- data.frame(stl(ts(sui$prop, start = 1998, freq = 12), "per")$time.series)$trend
 
 p <- ggplot(sui, aes(date, prop)) +
     geom_line(size = .2) +
-    geom_line(data = sui, aes(date, trend2), color = "blue") +
+    geom_line(data = sui, aes(date, trend), color = "blue") +
     scale_x_date() +
     geom_vline(aes(xintercept = as.Date(ban)), color = "#000000",
                linetype = 2) +
@@ -193,15 +140,7 @@ hom.mx <- ddply(hom, .(Year, m), function(df)
 hom.mx$date <- as.Date(paste(hom.mx$Year,
                              hom.mx$m,"15", sep = "/"), "%Y/%m/%d")
 
-
-addTrend <- defmacro(df, col, start, expr={
-    df$trend <- data.frame(stl(ts(df[[col]], start = start, freq = 12), "per")$time.series)$trend
-})
-
 addTrend(hom.mx, "V1", 1998)
-
-#hom.mx$trend <- data.frame(stl(ts(hom.mx$V1, start = 1998, freq = 12), "per")$time.series)$trend
-
 
 rate <- ts(hom.mx$V1, start = kstart.year, freq = 12)
 breakmx <- breakpoints(rate ~ 1, h = 12, breaks = 1)
@@ -272,7 +211,6 @@ for(i in 1:length(regions))
   setRegion(hom, regions[[i]], names(regions)[i])
 
 
-
 hom.region <- ddply(hom, .(region, date), function (df) sum(df$Murders.with.Firearm) / sum(df$Murders))
 
 x <- dlply(hom.region, .(region), transform, trend = data.frame(stl(ts(V1, start = 2001, freq = 12), "per")$time.series)$trend )
@@ -296,8 +234,6 @@ savePlotAA(p, "graphs/regions2.png")
 ########################################################
 #For Municipalities near the US Border
 ########################################################
-
-#hom.border$trend <- data.frame(stl(ts(hom.border$prop, start = 1998, freq = 12))$time.series)$trend
 addTrend(hom.border, "prop", 1998)
 
 p <- ggplot(hom.border, aes(date, prop)) +
