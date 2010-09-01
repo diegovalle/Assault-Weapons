@@ -1,5 +1,3 @@
-
-
 ########################################################
 #Clean up the daily homicide data in Nuevo Laredo
 ########################################################
@@ -27,7 +25,7 @@ print(qplot(data = awb.lar, x= date, y = V1) +
                 family = poisson(log)) +
     geom_vline(aes(xintercept = ban),
                color = "gray70",
-               linetype = 2)
+               linetype = 2))
 
 
 #Analyze only the murders from the time Osiel Cardenas was
@@ -36,6 +34,7 @@ awb.lar <- subset(awb.lar, date < fox.troops & date > osiel.captured)
 awb.lar$daynum <- -549:271
 awb.lar$awb <- awb.lar$daynum > 0
 
+sink("reports/reports.txt")
 ########################################################
 #Poisson Model
 ########################################################
@@ -47,26 +46,39 @@ m2 <- glm(data = awb.lar,
 coefplot(m2)
 anova(m1, m2)
 
+
 ########################################################
 #Zero Inflated Poisson Model
 ########################################################
 zip<-zeroinfl(data = awb.lar, V1 ~ daynum )
-summary(zip)
+cat("***Zero inflated poisson Model without a breakpoint:***")
+print(summary(zip))
+cat("\n---\n")
+
 zip2<-zeroinfl(data = awb.lar, V1 ~ awb / daynum)
-summary(zip2)
+cat("***Zero inflated poisson Model with a breakpoint corresponding to the expiration of the assault weapon ban:***")
+print(summary(zip2))
+cat("\n---\n")
+cat("\n----\n")
 
 ########################################################
 #Check that the Zero Inflated model is better than
 #the Poisson one
 ########################################################
+cat("***Comparing zero inflated poisson model to normal poisson without a breakpoint:***\n")
 vuong(m2, zip2)
+cat("\n---\n")
+cat("***Comparing zero inflated poisson model to normal poisson with a breakpoint:***\n")
 vuong(m1, zip)
+cat("\n---\n")
+cat("\n---\n")
 
 ########################################################
 #Is the model with a breakpoint better than the one without?
 ########################################################
-lrtest(zip, zip2) #It is
-
+cat("***Likelihood ratio test comparing the zero inflated models with and\n without breakpoint***")
+print(lrtest(zip, zip2)) #It is
+unlink("reports/reports.txt")
 
 
 ########################################################
@@ -83,7 +95,7 @@ print(ggplot(awb.lar, aes(date, V1)) +
     geom_vline(aes(xintercept = as.Date(ban)),
                color = "#000000",
                linetype = 1) +
-    ylab("number of homicides") +
+    ylab("number of homicides by firearm") +
     annotate("text", x = ban, y = 4,
              label = "Expiration of Assault Weapon Ban",
              vjust = -.3, angle = 90) +
@@ -156,5 +168,5 @@ print(ggplot(before.army, aes(weeknum, V1)) +
                size = 1) +
     opts(title = "Weekly Number of Homicides by Firearm in Nuevo Laredo from the\nDate Osiel Cardenas was Captured to the Arrival of the Army") +
     xlab("weeks from assault weapon ban") + ylab("number of homicides by firearm"))
-dev.print(png, "graphs/nlaredo-awb.png", width = 640, height = 480)
+dev.print(png, "graphs/nlaredo-weekly.png", width = 640, height = 480)
 
