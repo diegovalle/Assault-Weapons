@@ -1,66 +1,99 @@
 
+
+########################################################
+#Clean up the daily homicide data in Nuevo Laredo
+########################################################
 lardaily <- subset(lardaily, ANIODEF %in% c(2003:2006))
 lardaily$CAUSAB <- substring(lardaily$CAUSAB, 1, 3)
 lardaily <- subset(lardaily, CAUSAB %in% c("X93", "X94", "X95"))
-
-
 lardaily$date <- with(lardaily, as.Date(paste(ANIODEF, MESDEF, DIADEF,
                                     sep = "-")))
-
-
-
 lardaily$deaths <- 1
 
+#Manually add the days that had no homicides
 lardaily <- merge(data.frame(date = seq(as.Date("2003-01-01"),
                  as.Date("2005-12-31"),
                  by="day")), by = "date",
                  lardaily, all.x = TRUE)
 lardaily[is.na(lardaily)] <- 0
-qplot(data = ddply(lardaily, .(date), function(df) sum(df$deaths)),
-      x= date, y = V1) +
+
+awb.lar <- ddply(lardaily, .(date), function(df) sum(df$deaths))
+#daily <- ddply(lardaily, .(date), function(df) sum(df$deaths))
+awb.lar$group <- cut(awb.lar$date,
+                   c(ban-1999, ban, ban+999999))
+print(qplot(data = awb.lar, x= date, y = V1) +
     geom_point() +
+    geom_smooth(aes(group = group), method = "glm",
+                family = poisson(log)) +
     geom_vline(aes(xintercept = ban),
                color = "gray70",
                linetype = 2)
 
 
-awb.lar <- ddply(lardaily, .(date), function(df) sum(df$deaths))
+#Analyze only the murders from the time Osiel Cardenas was
+#captured to the time the army arrived
 awb.lar <- subset(awb.lar, date < fox.troops & date > osiel.captured)
 awb.lar$daynum <- -549:271
 awb.lar$awb <- awb.lar$daynum > 0
 
-
+########################################################
+#Poisson Model
+########################################################
 m1 <- glm(data = awb.lar,
           V1 ~ daynum, family = "poisson")
-summary(m1)
-
-
+coefplot(m1)
 m2 <- glm(data = awb.lar,
           V1 ~ awb / daynum, family = "poisson")
-summary(m2)
-
+coefplot(m2)
 anova(m1, m2)
 
+########################################################
+#Zero Inflated Poisson Model
+########################################################
 zip<-zeroinfl(data = awb.lar, V1 ~ daynum )
 summary(zip)
 zip2<-zeroinfl(data = awb.lar, V1 ~ awb / daynum)
 summary(zip2)
+
+########################################################
+#Check that the Zero Inflated model is better than
+#the Poisson one
+########################################################
 vuong(m2, zip2)
 vuong(m1, zip)
 
-lrtest(zip, zip2)
+########################################################
+#Is the model with a breakpoint better than the one without?
+########################################################
+lrtest(zip, zip2) #It is
+
+
+
+########################################################
+#Now that it is proven that a model with a breakpoint that
+#coincides with the assault weapon ban is better, the rest
+#is model checking, effect size, charts
+########################################################
 summary(zeroinfl(data = subset(awb.lar, date > ban), V1 ~ daynum))
 
-ggplot(awb.lar, aes(date, V1)) +
-    geom_point() +
+print(ggplot(awb.lar, aes(date, V1)) +
+    geom_point(alpha = .5) +
     scale_x_date() +
-    geom_smooth(aes(group = fac), method = "glm", family = "poisson") +
-    geom_vline(aes(xintercept = ban),
-               color = "gray70",
-               linetype = 2)
+    geom_smooth(aes(group = awb), method = "glm", family = "poisson") +
+    geom_vline(aes(xintercept = as.Date(ban)),
+               color = "#000000",
+               linetype = 1) +
+    ylab("number of homicides") +
+    annotate("text", x = ban, y = 4,
+             label = "Expiration of Assault Weapon Ban",
+             vjust = -.3, angle = 90) +
+    opts(title = "Daily Homicides in Nuevo Laredo from the time\nOsiel Cardenas was Captured to the Time the Army Arrived"))
+dev.print(png, "graphs/nlaredo-daily.png", width = 640, height = 480)
 
 
-
+########################################################
+#A Chart with the weekly homicides is easier to read
+########################################################
 lardaily$week <- as.numeric(format(lardaily$date, "%W"))
 lardaily.w <- ddply(lardaily, .(ANIODEF, week), function(df) nrow(df))
 lardaily.w <- merge(data.frame(ANIODEF = rep(2003:2006, each = 52),
@@ -76,51 +109,43 @@ lardaily.w$group <- cut(lardaily.w$date,
 before.army <- subset(lardaily.w, (ANIODEF == 2005 & week < 24) |
                        (ANIODEF == 2004) |
                         (ANIODEF == 2003 & week > 11))
-osiel.captured
+
 hist(before.army$V1)
 before.army$weeknum <- -78:37
-fac <- before.army$weeknum > 0
-before.army$fac <- fac
-before.army$logV1 <- log(before.army$V1 + .0005)
+before.army$fac <- before.army$weeknum > 0
+
+########################################################
+#Poisson Model
+########################################################
 m1 <- glm(data = before.army,
           V1 ~ weeknum, family = "poisson")
 coefplot(m1)
-
 m2 <- glm(data = before.army,
           V1 ~ fac / weeknum, family = "poisson")
 coefplot(m2)
 anova(m1, m2)
 
-
-
-
-
-waldtest(m1, test="Chisq")
-
-coeftest(m1, vcov=sandwich)
-
-
+########################################################
+#Zero Inflated Model
+########################################################
 zip<-zeroinfl(data = before.army, V1 ~ weeknum )
 summary(zip)
 zip2<-zeroinfl(data = before.army, V1 ~ fac / weeknum)
 summary(zip2)
 vuong(m2, zip2)
 vuong(m1, zip)
-
 lrtest(zip, zip2)
 
-
 before.army$num <- 1:nrow(before.army)
-
 zip<-zeroinfl(data = subset(before.army, weeknum >= 0),
               V1 ~ num)
 summary(zip)
 zip2<-zeroinfl(data = subset(before.army, weeknum <= 0),
           V1 ~ num)
 summary(zip2)
-subset(before.army, weeknum < 0)
 
-ggplot(before.army, aes(weeknum, V1)) +
+
+print(ggplot(before.army, aes(weeknum, V1)) +
     geom_point() +
     stat_smooth(aes(group = group), method = "glm",
                 family = poisson(log)) +
@@ -130,6 +155,6 @@ ggplot(before.army, aes(weeknum, V1)) +
     geom_vline(aes(xintercept = 0),
                size = 1) +
     opts(title = "Weekly Number of Homicides by Firearm in Nuevo Laredo from the\nDate Osiel Cardenas was Captured to the Arrival of the Army") +
-    xlab("weeks from assault weapon ban") + ylab("number of homicides by firearm")
+    xlab("weeks from assault weapon ban") + ylab("number of homicides by firearm"))
 dev.print(png, "graphs/nlaredo-awb.png", width = 640, height = 480)
-ban-fox.troops
+
