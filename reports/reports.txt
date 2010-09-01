@@ -1,0 +1,97 @@
+***Zero inflated poisson Model without a breakpoint:***
+Call:
+zeroinfl(formula = V1 ~ daynum, data = awb.lar)
+
+Pearson residuals:
+    Min      1Q  Median      3Q     Max 
+-0.3672 -0.3230 -0.2850 -0.2482 13.5661 
+
+Count model coefficients (poisson with log link):
+              Estimate Std. Error z value Pr(>|z|)  
+(Intercept) -0.3233952  0.1691332  -1.912   0.0559 .
+daynum      -0.0003241  0.0005245  -0.618   0.5366  
+
+Zero-inflation model coefficients (binomial with logit link):
+             Estimate Std. Error z value Pr(>|z|)    
+(Intercept)  1.274648   0.204328   6.238 4.43e-10 ***
+daynum      -0.001549   0.000674  -2.298   0.0216 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Number of iterations in BFGS optimization: 15 
+Log-likelihood: -336.2 on 4 Df
+
+---
+***Zero inflated poisson Model with a breakpoint corresponding to the expiration of the assault weapon ban:***
+Call:
+zeroinfl(formula = V1 ~ awb/daynum, data = awb.lar)
+
+Pearson residuals:
+    Min      1Q  Median      3Q     Max 
+-0.5585 -0.3072 -0.2559 -0.2117 12.4700 
+
+Count model coefficients (poisson with log link):
+                  Estimate Std. Error z value Pr(>|z|)
+(Intercept)      0.1335902  0.5253115   0.254    0.799
+awbTRUE         -0.7648132  0.8413005  -0.909    0.363
+awbFALSE:daynum  0.0008780  0.0016418   0.535    0.593
+awbTRUE:daynum   0.0007345  0.0032309   0.227    0.820
+
+Zero-inflation model coefficients (binomial with logit link):
+                 Estimate Std. Error z value Pr(>|z|)    
+(Intercept)      2.702555   0.530950   5.090 3.58e-07 ***
+awbTRUE         -0.602907   0.963816  -0.626   0.5316    
+awbFALSE:daynum  0.002767   0.001712   1.616   0.1061    
+awbTRUE:daynum  -0.009344   0.004572  -2.044   0.0410 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Number of iterations in BFGS optimization: 18 
+Log-likelihood: -325.7 on 8 Df
+
+---
+
+----
+***Comparing zero inflated poisson model to normal poisson without a breakpoint:***
+Vuong Non-Nested Hypothesis Test-Statistic: -2.528253 
+(test-statistic is asymptotically distributed N(0,1) under the
+ null that the models are indistinguishible)
+in this case:
+model2 > model1, with p-value 0.005731591 
+
+---
+***Comparing zero inflated poisson model to normal poisson with a breakpoint:***
+Vuong Non-Nested Hypothesis Test-Statistic: -2.521703 
+(test-statistic is asymptotically distributed N(0,1) under the
+ null that the models are indistinguishible)
+in this case:
+model2 > model1, with p-value 0.005839407 
+
+---
+
+---
+***Likelihood ratio test comparing the zero inflated models with and
+ without breakpoint***Likelihood ratio test
+
+Model 1: V1 ~ daynum
+Model 2: V1 ~ awb/daynum
+  #Df  LogLik Df  Chisq Pr(>Chisq)    
+1   4 -336.21                         
+2   8 -325.69  4 21.032  0.0003121 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+Vuong Non-Nested Hypothesis Test-Statistic: -1.54627 
+(test-statistic is asymptotically distributed N(0,1) under the
+ null that the models are indistinguishible)
+in this case:
+model2 > model1, with p-value 0.0610197 
+Vuong Non-Nested Hypothesis Test-Statistic: -1.772001 
+(test-statistic is asymptotically distributed N(0,1) under the
+ null that the models are indistinguishible)
+in this case:
+model2 > model1, with p-value 0.03819723 
+......
+
+
+ Rrrr! Avast Ye, YO HO!
+
