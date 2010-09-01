@@ -44,6 +44,7 @@ p <- ggplot(sui, aes(date, prop)) +
     xlab("date") + ylab("annualized monthly suicide rate")
 savePlotAA(p, "graphs/mexico-sui-firearm-prop.png")
 
+sui$trend <- NULL
 sui.both <- sui
 sui.both[3:4] <- data.frame(sapply(sui.both[3:4],
                 function(x) x / pop2$Monthly[1:nrow(sui.both)] *
@@ -307,7 +308,7 @@ p <- ggplot(subset(hom.borderct, Municipality2 == "NUEVO LAREDO"),
     geom_vline(aes(xintercept = osiel.captured),
                color = "#000000",
                linetype = 2) +
-    annotate("text", x = fox.troops, y = 23, label = "Troops in NL",
+    annotate("text", x = fox.troops, y = 23, label = "Troops\nin NL",
              hjust = 1.03) +
     annotate("text", x = ban, y = 17, hjust = 1.03,
              label = "Assault weapon ban\nexpiration") +
