@@ -3,10 +3,6 @@
 
 There has been a lot of attention paid to the role of US guns exacerbating the violence in Mexico. On September 14 the assault-weapon ban expired and as you can see from the charts there was an increase in the number of homicides and homicides with firearm. The problem with trying to ascertain causality is that there were two big confounding variables: La Barbie, working for the Sinaloa Cartel, was trying to take over the drug trafficking route of Nuevo Laredo, and the leader of the Sinaloa Cartel ended his alliance with the Juarez Cartel by killing Rodolfo Carrillo Fuentes, brother of the leader of the Juarez Cartel. This program will try to ascertain whether there was indeed an effect
 
-![Homicides and Homicides with Firearm](http://imgur.com/8oH2Q.png)
-
-![Proportion of Homicides Committed with a Firearm](http://imgur.com/EJwYX.png)
-
 
 Sources
 --------
@@ -43,11 +39,11 @@ Firearms-related suicides:
 * X73 Intentional self-harm by rifle, shotgun and larger firearm discharge
 * X74 Intentional self-harm by other and unspecified firearm discharge
 
-Homicides in Nuevo Leon:
+__Homicides in Nuevo Leon:__
 
 [PGJ](http://www.nl.gob.mx/pics/pages/pgj_estmunicipaljua_base/Juah29.xls)
 
-Report on the Gun Battles of Nuevo Laredo:
+__Report on the Gun Battles of Nuevo Laredo__
 
 Texas Rangers, Border Security Operations Center, www.scribd.com/doc/35201752/NuevoLaredoCartelGunBattle7-16-2010 (The report is _extremely_ graphic)
 
@@ -55,3 +51,7 @@ __Population Data:__
 
 [Indicadores demográficos básicos 1990-2030](http://www.conapo.gob.mx/index.php?option=com_content&view=article&id=125&Itemid=203)
 
+__Daily Homicide Data__
+
+Base de datos sobre defunciones Fuente: Instituto Nacional de Estadística y Geografía (http://www.inegi.org.mx)
+[Archivos en formato xBase contenidos en un arhivo comprimido ZIP](http://www.sinais.salud.gob.mx/basesdedatos/index.html#estatica)
