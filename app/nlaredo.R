@@ -34,7 +34,7 @@ awb.lar <- subset(awb.lar, date < fox.troops & date > osiel.captured)
 awb.lar$daynum <- -549:271
 awb.lar$awb <- awb.lar$daynum > 0
 
-sink("reports/reports.txt")
+sink("reports/report.txt")
 ########################################################
 #Poisson Model
 ########################################################
@@ -78,7 +78,7 @@ cat("\n---\n")
 ########################################################
 cat("***Likelihood ratio test comparing the zero inflated models with and\n without breakpoint***")
 print(lrtest(zip, zip2)) #It is
-unlink("reports/reports.txt")
+unlink("reports/report.txt")
 
 
 ########################################################
