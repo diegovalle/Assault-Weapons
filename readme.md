@@ -1,8 +1,11 @@
 ﻿The effect of the expiration of the assault weapon ban on Mexico
 ===================================================================
 
-There has been a lot of attention paid to the role of US guns exacerbating the violence in Mexico. On September 14 the assault-weapon ban expired and as you can see from the charts there was an increase in the number of homicides and homicides with firearm. The problem with trying to ascertain causality is that there were two big confounding variables: La Barbie, working for the Sinaloa Cartel, was trying to take over the drug trafficking route of Nuevo Laredo, and the leader of the Sinaloa Cartel ended his alliance with the Juarez Cartel by killing Rodolfo Carrillo Fuentes, brother of the leader of the Juarez Cartel. This program will try to ascertain whether there was indeed an effect
+There has been a lot of attention paid to the role of US guns exacerbating the violence in Mexico. On September 14 2004 the assault-weapon ban expired and as you can see from the charts this program generates, there was an increase in the number of homicides and homicides with firearm. The big problem in trying to ascertain causality is that there were two confounding variables: La Barbie, working for the Sinaloa Cartel, was trying to take over the drug trafficking route of Nuevo Laredo, and the leader of the Sinaloa Cartel ended his alliance with the Juarez Cartel by killing Rodolfo Carrillo Fuentes, brother of the leader of the Juarez Cartel. 
 
+I used a zero-inflated Poisson regression model predicting the homicides by firearm count with and without a breakpoint. The model with a breakpoint occuring at the same time as the assault weapons ban proved superior.
+
+[!Weekly Homicides with Firearm](http://imgur.com/1THui.png)
 
 Sources
 --------
