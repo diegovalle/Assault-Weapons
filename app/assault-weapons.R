@@ -199,13 +199,13 @@ setRegion <- defmacro(df, states, region.name, expr={
 
 regions <- list()
 regions[["North West"]] <- c("Durango", "Sinaloa", "Chihuahua", "Sonora", "Baja California Sur", "Baja California")
-regions[["West"]] <- c("Nayarit", "Jalisco", "Colima", "Michoacán")
+regions[["West"]] <- c("Nayarit", "Jalisco", "Colima", "MichoacÃ¡n")
 regions[["East"]] <- c("Puebla", "Veracruz Llave", "Tlaxcala", "Hidalgo")
-regions[["North East"]] <- c("Coahuila", "Nuevo León", "Tamaulipas")
-regions[["South East"]] <- c("Tabasco", "Campeche", "Quintana Roo", "Yucatán")
+regions[["North East"]] <- c("Coahuila", "Nuevo LeÃ³n", "Tamaulipas")
+regions[["South East"]] <- c("Tabasco", "Campeche", "Quintana Roo", "YucatÃ¡n")
 regions[["South West"]] <- c("Guerrero", "Oaxaca","Chiapas")
-regions[["Center North"]] <- c("Aguascalientes", "Guanajuato", "Querétaro", "San Luis Potosí", "Zacatecas")
-regions[["Center South"]] <- c("Morelos", "México", "Distrito Federal")
+regions[["Center North"]] <- c("Aguascalientes", "Guanajuato", "QuerÃ©taro", "San Luis PotosÃ­", "Zacatecas")
+regions[["Center South"]] <- c("Morelos", "MÃ©xico", "Distrito Federal")
 
 
 for(i in 1:length(regions))
@@ -338,8 +338,8 @@ x <- dlply(homsub, .(State), transform, trend = data.frame(stl(ts(prop, start = 
 homsub <- rbind.fill(x)
 
 dts <- c("Chihuahua", "Sinaloa", "Durango", "Sonora",
-         "Guerrero", "Baja California","Michoacán", "Tamaulipas")
-st <- c("México", "Chiapas", "Puebla", "Nuevo León",
+         "Guerrero", "Baja California","MichoacÃ¡n", "Tamaulipas")
+st <- c("MÃ©xico", "Chiapas", "Puebla", "Nuevo LeÃ³n",
         "Quintana Roo")
 
 
@@ -353,7 +353,7 @@ heights <- c(600, 480, 480, 480, 480, 525, 525)
 mapply(function(x, y, z, height, width)
             savePlotAA(plotAsWeBreaks(homsub, breaks.df, ban, x, z), y,
                        height, width),
-       list(NULL, "Chihuahua", "Nuevo León", "Michoacán","Sonora",
+       list(NULL, "Chihuahua", "Nuevo LeÃ³n", "MichoacÃ¡n","Sonora",
             dts, st), filenames,
        list(FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE), widths,
        heights)
@@ -361,7 +361,7 @@ mapply(function(x, y, z, height, width)
 ########################################################
 #Number of Homicides by Firearm in Nuevo Leon
 ########################################################
-nuevo.leon00 <- subset(homsub, homsub$State == "Nuevo León")
+nuevo.leon00 <- subset(homsub, homsub$State == "Nuevo LeÃ³n")
 addTrend(nuevo.leon00, "Murders.with.Firearm", 2000)
 
 p <- ggplot(nuevo.leon00, aes(date, Murders)) +
@@ -426,7 +426,7 @@ savePlotAA(p, "graphs/guns-num-chihuahua-1998-2008.png", width = 640, height = 4
 ########################################################
 #Number of Homicides in Nuevo Leon
 ########################################################
-nuevo.leon00 <- subset(hom, hom$State == "Nuevo León")
+nuevo.leon00 <- subset(hom, hom$State == "Nuevo LeÃ³n")
 homicides.nl <- c(nuevo.leon00$Murders, 8,
                   c(20, 16, 7, 26, 15, 13, 24, 32, 31,
                     26, 15, 42, 23, 29, 73, 101, 58, 102, 123))
