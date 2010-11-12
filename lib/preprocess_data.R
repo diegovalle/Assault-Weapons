@@ -4,6 +4,7 @@
 #hom <- read.csv(file("http://spreadsheets.google.com/pub?key=0AjjLwVYbDGx7dHdaMHhCQ21OZ1VzQk42WnltUXFkUWc&single=true&gid=0&graphs=csv",encoding = "UTF8"))
 #hom <- read.csv(bzfile("data/guns-month.csv.bz2"))
 hom <- subset(hom, Month != "No Especificado")
+hom$State <- iconv(hom$State, from = "windows-1252", to = "utf-8") 
 hom <- hom[-grep("Total", hom$State),]
 hom$Year <- rep(1998:2008, each = 12)
 hom$State <- rep(subset(unique(hom$State),unique(hom$State) != ""),
